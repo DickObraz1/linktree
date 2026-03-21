@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DickObraz | Tomáš Horych</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,38 +10,51 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Poppins', sans-serif; }
+        body { font-family: 'Poppins', sans-serif; overflow-x: hidden; }
         .pink-bg { background-color: #ff66c4; }
         .pink-text { color: #ff66c4; }
         .pink-border { border-color: #ff66c4; }
+        
+        /* Animace pro skákajícího lilka */
+        #doodle-char {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 60px; /* Trochu jsem ho zvětšil, ať je vidět */
+            cursor: pointer;
+            z-index: 50;
+            user-select: none;
+            transition: transform 0.1s ease-out;
+            /* Přidán jemný stín pro 3D efekt */
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900 flex flex-col items-center p-6 min-h-screen">
 
-    <div class="flex flex-col items-center mt-10 w-full max-w-md text-center">
+    <div id="doodle-char">🍆</div>
+
+    <div class="flex flex-col items-center mt-10 w-full max-w-md text-center relative z-10">
         <div class="relative">
             <img src="https://cc.cz/wp-content/uploads/2025/12/tomas-horych-mvp-x1.jpg" 
                  alt="Tomáš - DickObraz" 
                  class="rounded-full w-28 h-28 border-4 pink-border shadow-xl object-cover object-top">
-            <div class="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-md">
-                <span class="text-xl">🎨</span>
-            </div>
         </div>
         
-        <h1 class="text-3xl font-extrabold mt-6 tracking-tight pink-text italic uppercase">DickObraz</h1>
+        <h1 class="text-3xl font-extrabold mt-6 tracking-tight pink-text italic uppercase text-shadow-sm">DickObraz</h1>
         <p class="text-gray-600 mt-3 text-sm leading-relaxed px-4">
-            Tomáš alias <span class="font-bold text-gray-800 italic">DickObraz</span> je tvůrce originálních omalovánek a karetní hry inspirované Cards Against Humanity. Vše můžeš získat níže:
+            Tomáš alias <span class="font-bold text-gray-800 italic">DickObraz</span> je tvůrce originálních omalovánek a her. Vše můžeš získat níže:
         </p>
     </div>
 
-    <div class="flex flex-col w-full max-w-md mt-10 space-y-4">
+    <div class="flex flex-col w-full max-w-md mt-10 space-y-4 relative z-10">
         
         <a href="https://cc.cz/nemohl-sehnat-omalovanky-s-muzskym-prirozenim-tak-je-zacal-vyrabet-behem-par-dnu-prodal-tisic-kusu/" 
            target="_blank" 
            class="group pink-bg text-white p-2 rounded-full shadow-lg flex items-center transition-all duration-300 hover:scale-105 active:scale-95">
             <img src="https://cc.cz/wp-content/uploads/2025/12/tomas-horych-mvp-x1.jpg" 
                  class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm group-hover:rotate-6 transition-transform">
-            <span class="font-bold text-base flex-grow text-center pr-8 uppercase tracking-wide text-white">Rozhovor se mnou</span>
+            <span class="font-bold text-base flex-grow text-center pr-8 uppercase tracking-wide">Rozhovor se mnou</span>
         </a>
 
         <a href="https://www.dickobraz.cz/p/omalovanky-pro-dospele-dickobraz#130" 
@@ -49,7 +62,7 @@
            class="group pink-bg text-white p-2 rounded-full shadow-lg flex items-center transition-all duration-300 hover:scale-105 active:scale-95">
             <img src="https://dickobraz-cz.s51.cdn-upgates.com/_cache/8/6/8665de3e9fe4ed1c2b39cffe27fd1dc8-dickobraz2.jpg" 
                  class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm group-hover:rotate-6 transition-transform">
-            <span class="font-bold text-base flex-grow text-center pr-8 uppercase tracking-wide text-white">Pinďouří omalovánky</span>
+            <span class="font-bold text-base flex-grow text-center pr-8 uppercase tracking-wide">Pinďouří omalovánky</span>
         </a>
 
         <a href="https://www.dickobraz.cz/p/fuck-me-neser-odnasravaci-omalovanky" 
@@ -57,7 +70,7 @@
            class="group pink-bg text-white p-2 rounded-full shadow-lg flex items-center transition-all duration-300 hover:scale-105 active:scale-95">
             <img src="https://dickobraz-cz.s51.cdn-upgates.com/_cache/6/4/642844d74a4e70820355eb5558947663-obalka-fuck-me-neser.jpeg" 
                  class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm group-hover:rotate-6 transition-transform">
-            <span class="font-bold text-base flex-grow text-center pr-8 uppercase tracking-wide text-white">Odnasrávací omalovánky</span>
+            <span class="font-bold text-base flex-grow text-center pr-8 uppercase tracking-wide">Odnasrávací omalovánky</span>
         </a>
 
         <a href="https://www.dickobraz.cz/p/karty-proti-lidskosti" 
@@ -65,18 +78,60 @@
            class="group pink-bg text-white p-2 rounded-full shadow-lg flex items-center transition-all duration-300 hover:scale-105 active:scale-95">
             <img src="https://dickobraz-cz.s51.cdn-upgates.com/_cache/b/2/b29b894aebd730fc467116bbc3cb7321-sleva-100kc.png" 
                  class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm group-hover:rotate-6 transition-transform">
-            <span class="font-bold text-base flex-grow text-center pr-8 uppercase tracking-wide text-white">KARTY BEZ CENZURY</span>
+            <span class="font-bold text-base flex-grow text-center pr-8 uppercase tracking-wide">KARTY BEZ CENZURY</span>
         </a>
 
     </div>
 
-    <a href="https://www.dickobraz.cz" target="_blank" class="mt-12 text-gray-400 hover:pink-text transition-colors font-medium text-sm border-b border-gray-200 pb-1 uppercase tracking-widest">
+    <a href="https://www.dickobraz.cz" target="_blank" class="mt-12 text-gray-400 hover:pink-text transition-colors font-medium text-sm border-b border-gray-200 pb-1 uppercase tracking-widest relative z-10">
         www.dickobraz.cz
     </a>
 
-    <footer class="mt-8 pb-6 text-gray-300 text-[10px] uppercase tracking-tighter">
+    <footer class="mt-8 pb-6 text-gray-300 text-[10px] uppercase tracking-tighter relative z-10">
         Made by DickObraz © 2026
     </footer>
+
+    <script>
+        const doodle = document.getElementById('doodle-char');
+        let y = 0;
+        let velocity = 0;
+        const gravity = 0.4;
+        const jumpStrength = -10; // Síla velkého skoku na kliknutí
+
+        function update() {
+            velocity += gravity;
+            y += velocity;
+
+            // Kolize se zemí (v našem případě spodní okraj obrazovky)
+            if (y > 0) {
+                y = 0;
+                velocity = jumpStrength * 0.6; // Automatický odraz (jako Doodle Jump)
+                
+                // Přidáme lilku rotaci při dopadu
+                doodle.style.transform += ' rotate(10deg)';
+                setTimeout(() => {
+                   doodle.style.transform = doodle.style.transform.replace(' rotate(10deg)', '');
+                }, 100);
+            }
+
+            // Použijeme translateY a zachováme případnou rotaci z dopadu
+            doodle.style.transform = `translateY(${y}px)`;
+            
+            requestAnimationFrame(update);
+        }
+
+        // Velký skok na kliknutí
+        window.addEventListener('mousedown', () => {
+            velocity = jumpStrength;
+        });
+        
+        window.addEventListener('touchstart', (e) => {
+            // Reagujeme na dotyk, ale jen pokud neklikáme na odkaz (zajištěno z-indexem)
+            velocity = jumpStrength;
+        });
+
+        update();
+    </script>
 
 </body>
 </html>
