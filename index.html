@@ -10,11 +10,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Poppins', sans-serif; overflow-x: hidden; touch-action: manipulation; }
+        body { font-family: 'Poppins', sans-serif; overflow-x: hidden; touch-action: manipulation; background-color: white; }
         .pink-bg { background-color: #ff66c4; }
         .pink-text { color: #ff66c4; }
         .pink-border { border-color: #ff66c4; }
         
+        /* Hlavní hrací lilek - schovaný na začátku */
         #doodle-char {
             position: fixed;
             bottom: 40px;
@@ -26,6 +27,8 @@
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
             transform: translateX(-50%);
             will-change: transform;
+            opacity: 0; /* Začíná neviditelný */
+            transition: opacity 1s ease-in-out; /* Plynulé objevení */
         }
 
         #gyro-btn {
@@ -37,9 +40,24 @@
             opacity: 0.6;
             cursor: pointer;
         }
+
+        /* Styly pro padající lilky Tsunami */
+        .falling-eggplant {
+            position: fixed;
+            top: -10vh; /* Začíná nad obrazovkou */
+            pointer-events: none; /* Nelze na ně kliknout */
+            z-index: 0; /* Pod tlačítky */
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(115vh) rotate(360deg); /* Propadne dolů a zatočí se */
+            }
+        }
     </style>
 </head>
-<body class="bg-white text-gray-900 flex flex-col items-center p-6 min-h-screen">
+<body class="text-gray-900 flex flex-col items-center p-6 min-h-screen">
 
     <button id="gyro-btn" onclick="requestGyroPermission()" class="bg-gray-200 px-3 py-1 rounded-full uppercase font-bold">
         📳 Zapnout pohyb
@@ -47,7 +65,7 @@
 
     <div id="doodle-char">🍆</div>
 
-    <div class="flex flex-col items-center mt-10 w-full max-w-md text-center relative z-10">
+    <div class="flex flex-col items-center mt-10 w-full max-w-md text-center relative z-10 bg-white/80 p-4 rounded-3xl backdrop-blur-sm shadow-sm">
         <div class="relative">
             <img src="https://cc.cz/wp-content/uploads/2025/12/tomas-horych-mvp-x1.jpg" 
                  alt="Tomáš - DickObraz" 
@@ -59,7 +77,7 @@
         
         <h1 class="text-3xl font-extrabold mt-6 tracking-tight pink-text italic uppercase">DickObraz</h1>
         <p class="text-gray-600 mt-3 text-sm leading-relaxed px-4">
-            Tomáš alias <span class="font-bold text-gray-800 italic">DickObraz</span> je tvůrce originálních omalovánek a karetní hry inspirované Cards Against Humanity. Vše můžeš získat níže:
+            Tomáš alias <span class="font-bold text-gray-800 italic">DickObraz</span> je tvůrce originálních omalovánek a karetní hry. Vše můžeš získat níže:
         </p>
     </div>
 
@@ -108,6 +126,50 @@
     </footer>
 
     <script>
+        // --- 1. TSUNAMI LOGIKA (Prší lilky) ---
+        function createEggplantRain() {
+            const container = document.body;
+            const eggplantCount = 180; // "Stovky" - 180 je bezpečné pro výkon telefonu
+
+            for (let i = 0; i < eggplantCount; i++) {
+                const ep = document.createElement('div');
+                ep.innerText = '🍆';
+                ep.className = 'falling-eggplant';
+                
+                // Náhodná pozice na šířku (0-100vw)
+                ep.style.left = Math.random() * 100 + 'vw';
+                
+                // Náhodná velikost (20px - 50px)
+                ep.style.fontSize = Math.random() * 30 + 20 + 'px';
+                
+                // Náhodná rychlost pádu (1.5s - 4s)
+                ep.style.animationDuration = Math.random() * 2.5 + 1.5 + 's';
+                
+                // Náhodné zpoždění startu (0s - 2s), aby nepadaly všechny naráz
+                ep.style.animationDelay = Math.random() * 2 + 's';
+                
+                // Náhodná průhlednost (trochu hloubka ostrosti)
+                ep.style.opacity = Math.random() * 0.5 + 0.5;
+
+                container.appendChild(ep);
+
+                // Úklid: Odstraní lilek z DOMu po skončení animace
+                ep.addEventListener('animationend', () => {
+                    ep.remove();
+                });
+            }
+
+            // --- 2. OBJEVENÍ HRACÍHO LILKU ---
+            // Objeví se 2.5 vteřiny po začátku deště
+            setTimeout(() => {
+                const mainChar = document.getElementById('doodle-char');
+                mainChar.style.opacity = '1';
+                startMainGameLogic(); // Spustí fyziku až po objevení
+            }, 2500);
+        }
+
+
+        // --- 3. HRACÍ LOGIKA (Skok a Gyro) ---
         const doodle = document.getElementById('doodle-char');
         let posY = 0;
         let posX = 0; 
@@ -115,8 +177,17 @@
         let velocityY = 0;
         const gravity = 0.4;
         const jumpStrength = -10;
+        let gameActive = false;
 
+        function startMainGameLogic() {
+            gameActive = true;
+            update(); // Začneme loopovat fyziku
+        }
+
+        // Fyzika skákání
         function update() {
+            if (!gameActive) return;
+
             velocityY += gravity;
             posY += velocityY;
 
@@ -133,10 +204,13 @@
             requestAnimationFrame(update);
         }
 
-        window.addEventListener('touchstart', () => { velocityY = jumpStrength; });
-        window.addEventListener('mousedown', () => { velocityY = jumpStrength; });
+        // Velký skok na kliknutí
+        window.addEventListener('touchstart', () => { if(gameActive) velocityY = jumpStrength; });
+        window.addEventListener('mousedown', () => { if(gameActive) velocityY = jumpStrength; });
 
+        // Gyroskop
         function handleOrientation(event) {
+            if (!gameActive) return;
             const tilt = event.gamma; 
             targetPosX = tilt * 6; // Citlivost pohybu
         }
@@ -158,7 +232,8 @@
             }
         }
 
-        update();
+        // SPUŠTĚNÍ DEŠTĚ PO NAČTENÍ STRÁNKY
+        window.onload = createEggplantRain;
     </script>
 
 </body>
