@@ -11,10 +11,13 @@
     
     <style>
         body { font-family: 'Poppins', sans-serif; overflow-x: hidden; touch-action: manipulation; background-color: white; }
-        .pink-bg { background-color: #ff66c4; }
+        .pink-bg { background-color: #ff66c4; } /* Hlavní prodejní růžová */
         .pink-text { color: #ff66c4; }
         .pink-border { border-color: #ff66c4; }
         
+        /* Nový, světlejší odstín pro slevu */
+        .discount-bg { background-color: #ff9cde; } 
+
         /* Hlavní hrací lilek - schovaný na začátku */
         #doodle-char {
             position: fixed;
@@ -22,13 +25,13 @@
             left: 50%;
             font-size: 60px;
             cursor: pointer;
-            z-index: 50; /* Před většinou prvků, ale za gyro-btn a fg-lilky */
+            z-index: 50; 
             user-select: none;
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
             transform: translateX(-50%);
             will-change: transform;
-            opacity: 0; /* Začíná neviditelný */
-            transition: opacity 1s ease-in-out; /* Plynulé objevení */
+            opacity: 0; 
+            transition: opacity 1s ease-in-out; 
         }
 
         #gyro-btn {
@@ -36,7 +39,7 @@
             top: 10px;
             right: 10px;
             font-size: 10px;
-            z-index: 100; /* Vždy úplně nahoře */
+            z-index: 100; 
             opacity: 0.6;
             cursor: pointer;
         }
@@ -44,26 +47,26 @@
         /* Styly pro padající lilky Tsunami */
         .falling-eggplant {
             position: fixed;
-            top: -10vh; /* Začíná nad obrazovkou */
-            pointer-events: none; /* Nelze na ně kliknout */
+            top: -10vh; 
+            pointer-events: none; 
             animation: fall linear forwards;
         }
 
         @keyframes fall {
             to {
-                transform: translateY(115vh) rotate(360deg); /* Propadne dolů a zatočí se */
+                transform: translateY(115vh) rotate(360deg); 
             }
         }
 
-        /* Nové třídy pro hloubku (Před a Po) */
+        /* Třídy pro hloubku (Před a Po) */
         .falling-eggplant-bg {
-            z-index: 5; /* Za text/tlačítka na 10 */
+            z-index: 5; 
             filter: blur(2px);
             opacity: 0.5;
         }
 
         .falling-eggplant-fg {
-            z-index: 60; /* Před hrací lilek (50) a text (10), ale za gyro-btn (100) */
+            z-index: 60; 
             opacity: 1;
         }
     </style>
@@ -101,6 +104,12 @@
                  class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm group-hover:rotate-6 transition-transform">
             <span class="font-bold text-base flex-grow text-center pr-8 uppercase tracking-wide">Rozhovor se mnou</span>
         </a>
+
+        <div class="discount-bg text-white px-5 py-2.5 rounded-full shadow-md flex items-center justify-center transition-all duration-300 hover:scale-105 select-all cursor-pointer">
+            <span class="font-semibold text-sm uppercase tracking-wide text-center">
+                🎁 Sleva 10%: <strong class="text-white font-black text-base ml-1">TOMAS10</strong>
+            </span>
+        </div>
 
         <a href="https://www.dickobraz.cz/p/omalovanky-pro-dospele-dickobraz#130" 
            target="_blank" 
@@ -140,49 +149,43 @@
         // --- 1. TSUNAMI LOGIKA (Prší lilky na dvou vrstvách) ---
         function createEggplantRain() {
             const container = document.body;
-            const bgCount = 100; // Počet lilků vzadu
-            const fgCount = 80;  // Počet lilků vpředu
-            const totalCount = bgCount + fgCount; // Celkem "stovky"
+            const bgCount = 100; 
+            const fgCount = 80;  
 
-            // VRSTVA VZADU (Menší, pomalejší, blur, nižší z-index)
             for (let i = 0; i < bgCount; i++) {
                 const ep = document.createElement('div');
                 ep.innerText = '🍆';
                 ep.className = 'falling-eggplant falling-eggplant-bg';
                 ep.style.left = Math.random() * 100 + 'vw';
-                ep.style.fontSize = Math.random() * 20 + 20 + 'px'; // 20px - 40px
-                ep.style.animationDuration = Math.random() * 2.5 + 2.5 + 's'; // 2.5s - 5s
+                ep.style.fontSize = Math.random() * 20 + 20 + 'px';
+                ep.style.animationDuration = Math.random() * 2.5 + 2.5 + 's';
                 ep.style.animationDelay = Math.random() * 2 + 's';
-                ep.style.opacity = Math.random() * 0.4 + 0.3; // 0.3 - 0.7
+                ep.style.opacity = Math.random() * 0.4 + 0.3;
                 container.appendChild(ep);
                 ep.addEventListener('animationend', () => ep.remove());
             }
 
-            // VRSTVA VPŘEDU (Větší, rychlejší, ostré, vyšší z-index)
             for (let i = 0; i < fgCount; i++) {
                 const ep = document.createElement('div');
                 ep.innerText = '🍆';
                 ep.className = 'falling-eggplant falling-eggplant-fg';
                 ep.style.left = Math.random() * 100 + 'vw';
-                ep.style.fontSize = Math.random() * 30 + 40 + 'px'; // 40px - 70px
-                ep.style.animationDuration = Math.random() * 1.5 + 1 + 's'; // 1s - 2.5s
+                ep.style.fontSize = Math.random() * 30 + 40 + 'px';
+                ep.style.animationDuration = Math.random() * 1.5 + 1 + 's';
                 ep.style.animationDelay = Math.random() * 2 + 's';
-                ep.style.opacity = Math.random() * 0.3 + 0.7; // 0.7 - 1.0
+                ep.style.opacity = Math.random() * 0.3 + 0.7;
                 container.appendChild(ep);
                 ep.addEventListener('animationend', () => ep.remove());
             }
 
-            // --- 2. OBJEVENÍ HRACÍHO LILKU ---
-            // Objeví se 2.5 vteřiny po začátku deště, plynule, a je za předními lilky
             setTimeout(() => {
                 const mainChar = document.getElementById('doodle-char');
                 mainChar.style.opacity = '1';
-                startMainGameLogic(); // Spustí fyziku až po objevení
+                startMainGameLogic();
             }, 2500);
         }
 
-
-        // --- 3. HRACÍ LOGIKA (Skok a Gyro) ---
+        // --- 2. HRACÍ LOGIKA (Skok a Gyro) ---
         const doodle = document.getElementById('doodle-char');
         let posY = 0;
         let posX = 0; 
@@ -194,38 +197,28 @@
 
         function startMainGameLogic() {
             gameActive = true;
-            update(); // Začneme loopovat fyziku
+            update();
         }
 
-        // Fyzika skákání
         function update() {
             if (!gameActive) return;
-
             velocityY += gravity;
             posY += velocityY;
-
-            if (posY > 0) {
-                posY = 0;
-                velocityY = jumpStrength * 0.6;
-            }
-
+            if (posY > 0) { posY = 0; velocityY = jumpStrength * 0.6; }
             posX += (targetPosX - posX) * 0.1;
             const limit = (window.innerWidth / 2) - 40;
             posX = Math.max(-limit, Math.min(limit, posX));
-            
             doodle.style.transform = `translate(calc(-50% + ${posX}px), ${posY}px)`;
             requestAnimationFrame(update);
         }
 
-        // Velký skok na kliknutí kamkoliv
         window.addEventListener('touchstart', () => { if(gameActive) velocityY = jumpStrength; });
         window.addEventListener('mousedown', () => { if(gameActive) velocityY = jumpStrength; });
 
-        // Gyroskop
         function handleOrientation(event) {
             if (!gameActive) return;
             const tilt = event.gamma; 
-            targetPosX = tilt * 6; // Citlivost pohybu
+            targetPosX = tilt * 6;
         }
 
         async function requestGyroPermission() {
@@ -236,16 +229,13 @@
                         window.addEventListener('deviceorientation', handleOrientation);
                         document.getElementById('gyro-btn').style.display = 'none';
                     }
-                } catch (error) {
-                    console.error(error);
-                }
+                } catch (error) { console.error(error); }
             } else {
                 window.addEventListener('deviceorientation', handleOrientation);
                 document.getElementById('gyro-btn').style.display = 'none';
             }
         }
 
-        // SPUŠTĚNÍ DEŠTĚ PO NAČTENÍ STRÁNKY
         window.onload = createEggplantRain;
     </script>
 
