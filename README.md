@@ -1,17 +1,23 @@
-# DickObraz – rozcestník (odkazy.dickobraz.cz)
+# DickObraz – rozcestníky pro sociální sítě
 
-Tři stránky s odkazy pro tři profily:
+Tři samostatné stránky, každá na vlastní subdoméně:
 
 | Soubor | Pro koho | Adresa po nasazení |
 |---|---|---|
-| `index.html` | Instagram @dickobraz.cz | `odkazy.dickobraz.cz` |
-| `tomas.html` | Instagram @tomas.horych | `odkazy.dickobraz.cz/tomas` |
-| `x.html` | profil na X.com | `odkazy.dickobraz.cz/x` |
-| `statistiky.html` | jen pro tebe, za heslem | `odkazy.dickobraz.cz/statistiky` |
+| `index.html` | Instagram @dickobraz.cz | `links.dickobraz.cz` |
+| `tomas.html` | Instagram @tomas.horych | `tomas.dickobraz.cz` |
+| `x.html` | profil na X.com | `linkx.dickobraz.cz` |
+| `statistiky.html` | jen pro tebe, za heslem | `links.dickobraz.cz/statistiky` |
+
+Všechny tři domény jedou z **jednoho** Cloudflare Pages projektu a jednoho
+repa – nejsou to tři oddělené weby, jen se podle toho, na jakou doménu
+někdo přijde, pošle jiný soubor (viz `functions/_middleware.js` níže).
+Díky tomu je pořád jen jeden `assets/style.css`, jeden `assets/app.js` a
+jedna databáze kliků pro všechno.
 
 Obsah (nadpisy, popisky, seznam odkazů) se čte z `assets/config.js`. Styl je
 v `assets/style.css`, chování (padající lilky, hra, měření, odesílání kliků)
-v `assets/app.js`. Tyhle tři soubory jsou společné pro všechny stránky.
+v `assets/app.js`.
 
 **Když chceš změnit jeden odkaz** (text, obrázek, cílovou URL), stačí upravit
 příslušný řádek v `assets/config.js`. Nikdy neměň `id` u odkazu, který už
@@ -22,13 +28,14 @@ v configu je – podle něj se sčítají kliky, změna by ti rozbila srovnání
 
 ## 1. Přesun z GitHub Pages na Cloudflare Pages
 
-Proč: chceme vlastní doménu, na které nikde není vidět slovo "github", a
+Proč: chceme vlastní domény, na kterých nikde není vidět slovo "github", a
 zároveň potřebujeme vlastní počítadlo kliků (funguje i lidem se zapnutým
 adblockem) – to GitHub Pages neumí, protože umí servírovat jen hotové
 soubory, ne spouštět kód. Cloudflare Pages umí obojí a je zdarma.
 
 Repo `dickobraz1/linktree` na GitHubu zůstává – jen se do něj přidá napojení
-na Cloudflare, které při každém tvém pushi samo nasadí novou verzi.
+na Cloudflare, které při každém tvém pushi samo nasadí novou verzi na
+všechny tři domény najednou.
 
 **Poznámka k branchi:** nová verze stránek používá cesty ke stylům a
 skriptům od kořene webu (`/assets/...`), což na současné adrese
@@ -37,6 +44,17 @@ v samostatné branchi **`cloudflare-migration`**, ne v `main`, aby se
 nerozbila stránka, která teď běží naživo na GitHub Pages. Cloudflare Pages
 níže napojíš rovnou na tuhle branch, takže `main` zůstane netknutá, dokud
 sama nerozhodneš, že GitHub Pages vypínáš (krok 9).
+
+### Jak funguje rozdělení na tři domény
+
+Cloudflare Pages umí na jeden projekt navěsit víc vlastních domén – všechny
+ale servírují stejný nasazený obsah. Aby `links.dickobraz.cz` ukázal
+`index.html`, `tomas.dickobraz.cz` zase `tomas.html` a `linkx.dickobraz.cz`
+`x.html`, se o to stará soubor `functions/_middleware.js`: podívá se, na
+jakou doménu požadavek přišel (`Host` hlavička), a podle toho pošle
+odpovídající soubor na `/`. Tohle je součástí kódu, nemusíš nic dalšího
+nastavovat – jen musíš v Cloudflare přidat všechny tři domény ke stejnému
+projektu (kroky 5–7 níže).
 
 ### Postup krok za krokem
 
@@ -52,38 +70,44 @@ sama nerozhodneš, že GitHub Pages vypínáš (krok 9).
    - **Build command:** necháš prázdné
    - **Build output directory:** `/` (kořen repa)
 4. Klikni **Save and Deploy**. Za chvíli dostaneš dočasnou adresu typu
-   `linktree-xxx.pages.dev` – tam se dá zkontrolovat, že to funguje, ještě
-   než napojíš vlastní doménu.
-5. V projektu jdi do **Custom domains** → **Set up a custom domain** →
-   napiš `odkazy.dickobraz.cz` → potvrdit.
-6. Cloudflare ti ukáže hodnotu pro CNAME (obvykle
+   `linktree-xxx.pages.dev` – tam se dá zkontrolovat, že projekt jede,
+   ještě než napojíš vlastní domény (na `.pages.dev` adrese uvidíš vždy
+   `index.html`, protože middleware rozlišuje jen tři konkrétní domény
+   výše – to je v pořádku).
+5. V projektu jdi do **Custom domains** → **Set up a custom domain** a
+   po jedné přidej všechny tři:
+   - `links.dickobraz.cz`
+   - `tomas.dickobraz.cz`
+   - `linkx.dickobraz.cz`
+6. U každé domény ti Cloudflare ukáže hodnotu pro CNAME (obvykle
    `<název-projektu>.pages.dev`, tedy nejspíš **`linktree.pages.dev`** –
-   přesný název projektu ale zkontroluj nahoře v dashboardu, protože pokud
-   ti Cloudflare při zakládání nabídl jiný název, bude se lišit).
+   přesný název projektu zkontroluj nahoře v dashboardu, protože pokud ti
+   Cloudflare při zakládání nabídl jiný název, bude se lišit). Hodnota je
+   pro všechny tři domény stejná.
 7. **Teprve teď** jdi ke svému DNS poskytovateli (tam, kde spravuješ
-   `dickobraz.cz`) a přidej nový záznam:
-   - **Typ:** CNAME
-   - **Název/Host:** `odkazy`
-   - **Cíl/Value:** hodnota z kroku 6 (např. `linktree.pages.dev`)
+   `dickobraz.cz`) a přidej tři CNAME záznamy:
+   - **Typ:** CNAME, **Host:** `links`, **Cíl:** hodnota z kroku 6
+   - **Typ:** CNAME, **Host:** `tomas`, **Cíl:** hodnota z kroku 6
+   - **Typ:** CNAME, **Host:** `linkx`, **Cíl:** hodnota z kroku 6
    - Proxy/Cloudflare ikonka: pokud ti ji nabídne, klidně zapni (oranžový
      mráček) – jen pokud je tvoje doména nad Cloudflare DNS. Pokud DNS
-     spravuje jiná firma, prostě ulož běžný CNAME záznam.
-8. Počkej pár minut na propagaci. Cloudflare Pages ti u custom domain
+     spravuje jiná firma, prostě ulož běžné CNAME záznamy.
+8. Počkej pár minut na propagaci. Cloudflare Pages ti u každé custom domain
    ukáže zelený stav, jakmile je vše v pořádku.
 
 **Důležité:** Nameservery domény `dickobraz.cz` se nikam nestěhují a nic se
-nemění pro eshop ani e-maily – přidáváš jen jeden nový CNAME záznam pro
-subdoménu `odkazy`. Pořadí ale dodrž přesně: nejdřív doména v Cloudflare
-Pages (krok 5), pak teprve CNAME u DNS poskytovatele (krok 7) – jinak se
-subdoména neaktivuje.
+nemění pro eshop ani e-maily – přidáváš jen tři nové CNAME záznamy pro
+subdomény `links`, `tomas` a `linkx`. Pořadí ale dodrž přesně: nejdřív
+domény v Cloudflare Pages (krok 5), pak teprve CNAME u DNS poskytovatele
+(krok 7) – jinak se subdomény neaktivují.
 
-9. Až `odkazy.dickobraz.cz` funguje a všechno sedí (viz checklist níže),
-   jdi do starého nastavení GitHub Pages (repo → Settings → Pages) a
-   vypni ho, ať neběží dvě verze webu vedle sebe.
+9. Až všechny tři domény fungují a všechno sedí (viz checklist níže), jdi
+   do starého nastavení GitHub Pages (repo → Settings → Pages) a vypni ho,
+   ať neběží dvě verze webu vedle sebe.
 
 Cesty ke stylům, skriptům a obrázkům (`/assets/...`) jsou v kódu psané od
-kořene domény (začínají lomítkem), takže fungují stejně na
-`odkazy.dickobraz.cz/` i na dřívějším `.../linktree/` – nic se tu nerozbije.
+kořene domény (začínají lomítkem), takže fungují stejně na všech třech
+doménách – nic se tu nerozbije.
 
 ---
 
@@ -91,9 +115,14 @@ kořene domény (začínají lomítkem), takže fungují stejně na
 
 Proč vůbec vlastní počítadlo, když máme GA4 a Meta Pixel: oba blokuje
 adblock a u návštěvnosti z Instagramu je to citelná část lidí. Počítadlo
-běží na tvé vlastní doméně (`/api/klik`), takže ho blokátor nerozezná od
-zbytku webu. GA4 a Pixel necháváme běžet dál (Pixel kvůli retargetingu),
-ale **zdroj pravdy pro čísla je počítadlo**, ne GA4.
+běží na tvých vlastních doménách (`/api/klik`), takže ho blokátor
+nerozezná od zbytku webu. GA4 a Pixel necháváme běžet dál (Pixel kvůli
+retargetingu), ale **zdroj pravdy pro čísla je počítadlo**, ne GA4.
+
+Protože všechny tři domény jedou z jednoho Cloudflare Pages projektu, mají
+i společnou D1 databázi – statistiky ze všech tří profilů uvidíš pohromadě
+na `links.dickobraz.cz/statistiky`, s rozpadem podle stránky (`znacka` /
+`tomas` / `x`).
 
 ### Založení D1 databáze
 
@@ -140,7 +169,8 @@ npx wrangler d1 execute dickobraz-linktree --remote --file=./schema.sql
 3. Znovu nasadit (stejně jako u D1 bindingu).
 
 Tímhle je počítadlo funkční: `/api/klik` zapisuje kliky a návštěvy do D1,
-`/api/statistiky` je čte a `/statistiky` je zobrazuje za heslem.
+`/api/statistiky` je čte a `links.dickobraz.cz/statistiky` je zobrazuje za
+heslem.
 
 ---
 
@@ -157,21 +187,33 @@ okamžiku zapnutí, zpětně ne.
 2. První dimenze: **Název dimenze:** `link_id`, **Rozsah:** Událost,
    **Parametr události:** `link_id` → Uložit.
 3. Zopakuj pro druhou: **Název dimenze:** `bio_page`, **Rozsah:** Událost,
-   **Parametr události:** `bio_page` → Uložit.
+   **Parametr události:** `bio_page` → Uložit. Tahle dimenze ti navíc
+   ukáže rozpad podle domény/profilu (`znacka` = links., `tomas` = tomas.,
+   `x` = linkx.), protože tři různé domény teď nahrazují to, co dřív byly
+   tři cesty na jedné doméně.
 
 Po pár hodinách sbíraní dat se rozpad podle odkazu i podle stránky objeví
 v přehledech (Průzkumy → volná forma, s dimenzemi `link_id` / `bio_page`).
 V **Realtime** přehledu bys měl(a) vidět událost `bio_click` s parametrem
 `link_id` prakticky hned po prvním kliknutí na nasazené stránce.
 
+Cross-domain linker v `gtag('config', ...)` je nastavený na všechny tři
+nové domény (`links.dickobraz.cz`, `tomas.dickobraz.cz`,
+`linkx.dickobraz.cz`) plus eshop, takže GA4 pozná návštěvníka i po
+prokliku z rozcestníku na eshop.
+
 ---
 
 ## Hotovo, když
 
-- [ ] `odkazy.dickobraz.cz` běží přes HTTPS a nikde se neobjeví slovo "github"
+- [ ] `links.dickobraz.cz`, `tomas.dickobraz.cz` i `linkx.dickobraz.cz` běží
+      přes HTTPS a nikde se neobjeví slovo "github"
+- [ ] každá doména ukazuje správný obsah (links. = značka, tomas. =
+      osobní profil, linkx. = dva odkazy pro X)
 - [ ] po kliknutí na odkaz se se zapnutým adblockem přesto přičte klik
       v `/statistiky` (otestuj to schválně se zapnutým adblockem)
-- [ ] `/statistiky` je za heslem a ukazuje rozpad podle odkazu i podle stránky
+- [ ] `links.dickobraz.cz/statistiky` je za heslem a ukazuje rozpad podle
+      odkazu i podle stránky (znacka/tomas/x)
 - [ ] všechny tři stránky fungují na mobilu, karty jsou čitelné i při
       zapnutém pohybu (lilci padají za textem, ne přes něj)
 - [ ] po prokliku vidíš v adresním řádku eshopu `utm_source` a `utm_content`

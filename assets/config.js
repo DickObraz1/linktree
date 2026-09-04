@@ -4,9 +4,9 @@
 // u existujících odkazů, jinak se rozbije srovnání dat v čase.
 window.SITE_CONFIG = {
     pages: {
-        // odkazy.dickobraz.cz - mluví značka, ne osoba
+        // links.dickobraz.cz - mluví značka, ne osoba
         znacka: {
-            utmCampaign: 'odkazy-znacka',
+            utmCampaign: 'links-znacka',
             hero: {
                 image: null,
                 title: 'DickObraz',
@@ -43,9 +43,9 @@ window.SITE_CONFIG = {
             }
         },
 
-        // odkazy.dickobraz.cz/tomas - osobní profil Tomáše
+        // tomas.dickobraz.cz - osobní profil Tomáše
         tomas: {
-            utmCampaign: 'odkazy-tomas',
+            utmCampaign: 'links-tomas',
             hero: {
                 image: 'https://cc.cz/wp-content/uploads/2025/12/tomas-horych-mvp-x1.jpg',
                 title: 'DickObraz',
@@ -89,9 +89,9 @@ window.SITE_CONFIG = {
             }
         },
 
-        // odkazy.dickobraz.cz/x - jen dva odkazy, žádná sleva, žádný rozhovor
+        // linkx.dickobraz.cz - jen dva odkazy, žádná sleva, žádný rozhovor
         x: {
-            utmCampaign: 'odkazy-x',
+            utmCampaign: 'linkx',
             hero: {
                 image: null,
                 title: 'DickObraz',
