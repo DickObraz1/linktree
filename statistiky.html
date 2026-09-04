@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiky | odkazy.dickobraz.cz</title>
+    <meta name="robots" content="noindex, nofollow">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, sans-serif; background: #f7f7f8; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #e5e5e5; }
+        th { font-size: 12px; text-transform: uppercase; color: #888; }
+    </style>
+</head>
+<body class="p-6 text-gray-900">
+
+    <div id="login-box" class="max-w-sm mx-auto mt-20">
+        <h1 class="text-xl font-bold mb-4">Statistiky odkazy.dickobraz.cz</h1>
+        <input id="password-input" type="password" placeholder="Heslo" class="border rounded px-3 py-2 w-full mb-2">
+        <button id="login-btn" class="bg-pink-500 text-white px-4 py-2 rounded w-full">Zobrazit</button>
+        <p id="login-error" class="text-red-500 text-sm mt-2 hidden">Špatné heslo.</p>
+    </div>
+
+    <div id="stats-box" class="max-w-2xl mx-auto hidden">
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-xl font-bold">Statistiky odkazy.dickobraz.cz</h1>
+            <div class="space-x-1">
+                <button data-days="7" class="period-btn px-3 py-1 rounded bg-gray-200 text-sm">7 dní</button>
+                <button data-days="30" class="period-btn px-3 py-1 rounded bg-gray-200 text-sm">30 dní</button>
+                <button data-days="90" class="period-btn px-3 py-1 rounded bg-gray-200 text-sm">90 dní</button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <h2 class="font-semibold mb-2">Celkem</h2>
+            <p id="totals-text" class="text-sm text-gray-600"></p>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <h2 class="font-semibold mb-3">Kliky podle odkazu</h2>
+            <table>
+                <thead><tr><th>Odkaz</th><th>Počet kliků</th></tr></thead>
+                <tbody id="link-table-body"></tbody>
+            </table>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-10">
+            <h2 class="font-semibold mb-3">Rozpad podle stránky</h2>
+            <table>
+                <thead><tr><th>Stránka</th><th>Návštěvy</th><th>Kliky</th><th>Míra prokliku</th></tr></thead>
+                <tbody id="page-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        var password = '';
+        var currentDays = 7;
+
+        function esc(s) {
+            var d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+
+        function loadStats(days) {
+            currentDays = days;
+            fetch('/api/statistiky', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: password, days: days })
+            })
+                .then(function (r) {
+                    if (r.status === 401) throw new Error('auth');
+                    return r.json();
+                })
+                .then(renderStats)
+                .catch(function (e) {
+                    if (e.message === 'auth') {
+                        document.getElementById('login-error').classList.remove('hidden');
+                        document.getElementById('stats-box').classList.add('hidden');
+                        document.getElementById('login-box').classList.remove('hidden');
+                    }
+                });
+        }
+
+        function renderStats(data) {
+            document.getElementById('login-box').classList.add('hidden');
+            document.getElementById('stats-box').classList.remove('hidden');
+
+            document.getElementById('totals-text').textContent =
+                data.totals.navstevy + ' návštěv, ' + data.totals.kliky + ' kliků, míra prokliku ' + data.totals.ctr + ' %';
+
+            var linkBody = document.getElementById('link-table-body');
+            linkBody.innerHTML = data.perLink.map(function (row) {
+                return '<tr><td>' + esc(row.link_id) + '</td><td>' + row.pocet + '</td></tr>';
+            }).join('') || '<tr><td colspan="2" class="text-gray-400">Zatím žádná data</td></tr>';
+
+            var pageBody = document.getElementById('page-table-body');
+            pageBody.innerHTML = data.perPage.map(function (row) {
+                return '<tr><td>' + esc(row.bio_page) + '</td><td>' + row.navstevy + '</td><td>' + row.kliky + '</td><td>' + row.ctr + ' %</td></tr>';
+            }).join('') || '<tr><td colspan="4" class="text-gray-400">Zatím žádná data</td></tr>';
+
+            document.querySelectorAll('.period-btn').forEach(function (btn) {
+                var active = Number(btn.getAttribute('data-days')) === currentDays;
+                btn.className = 'period-btn px-3 py-1 rounded text-sm ' + (active ? 'bg-pink-500 text-white' : 'bg-gray-200');
+            });
+        }
+
+        document.getElementById('login-btn').addEventListener('click', function () {
+            password = document.getElementById('password-input').value;
+            document.getElementById('login-error').classList.add('hidden');
+            loadStats(currentDays);
+        });
+
+        document.getElementById('password-input').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') document.getElementById('login-btn').click();
+        });
+
+        document.querySelectorAll('.period-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                loadStats(Number(btn.getAttribute('data-days')));
+            });
+        });
+    </script>
+</body>
+</html>

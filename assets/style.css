@@ -1,0 +1,79 @@
+body { font-family: 'Poppins', sans-serif; overflow-x: hidden; touch-action: manipulation; background-color: white; }
+.pink-bg { background-color: #ff66c4; } /* Hlavní prodejní růžová */
+.pink-text { color: #ff66c4; }
+.pink-border { border-color: #ff66c4; }
+
+/* Nový, světlejší odstín pro slevu */
+.discount-bg { background-color: #ff9cde; }
+
+/* Obsah stránky je vždy nad vrstvou s lilky */
+#page-content {
+    position: relative;
+    z-index: 1;
+}
+
+/* Hlavní hrací lilek */
+#doodle-char {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    font-size: 60px;
+    cursor: pointer;
+    z-index: 2;
+    user-select: none;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+    transform: translateX(-50%);
+    will-change: transform;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+#gyro-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    font-size: 10px;
+    z-index: 100;
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+/* Vrstva s padajícími lilky - vždy schovaná za obsahem stránky */
+#lilek-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Styly pro padající lilky Tsunami */
+.falling-eggplant {
+    position: absolute;
+    top: -10vh;
+    pointer-events: none;
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(115vh) rotate(360deg);
+    }
+}
+
+/* Třídy pro hloubku (Před a Po), krytí snížené ať text zůstane čitelný */
+.falling-eggplant-bg {
+    filter: blur(2px);
+    opacity: 0.2;
+}
+
+.falling-eggplant-fg {
+    opacity: 0.45;
+}
+
+/* Respektuje nastavení systému - u snížených animací lilky vůbec nespouštíme */
+@media (prefers-reduced-motion: reduce) {
+    #lilek-layer, #doodle-char, #gyro-btn {
+        display: none !important;
+    }
+}
