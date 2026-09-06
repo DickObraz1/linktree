@@ -109,7 +109,7 @@ window.SITE_CONFIG = {
                     id: 'fillmein',
                     title: 'FILL ME IN omalovánky',
                     url: 'https://www.dickobraz.cz/p/fill-me-in-gay-coloring-book',
-                    img: ''
+                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/a/9/a9c06d6916e4f191c868a289aac780e9-fill-me-in-titulka.jpg'
                 }
             ],
             footerLink: null
