@@ -2,11 +2,34 @@
     'use strict';
 
     var page = document.body.getAttribute('data-page');
-    var config = window.SITE_CONFIG.pages[page];
-    if (!config) {
+    var pageConfig = window.SITE_CONFIG.pages[page];
+    if (!pageConfig) {
         console.error('Neznámá stránka: ' + page);
         return;
     }
+
+    // Některé stránky (zatím jen X) mají víc jazykových variant obsahu -
+    // "config" níže je vždy ta aktuálně vybraná (jazyková) verze.
+    var LANG_KEY = 'dickobraz_bio_lang';
+    var currentLang = null;
+    if (pageConfig.languages) {
+        currentLang = pageConfig.defaultLanguage;
+        try {
+            var savedLang = localStorage.getItem(LANG_KEY);
+            if (savedLang && pageConfig.languages[savedLang]) currentLang = savedLang;
+        } catch (e) {}
+    }
+
+    var config;
+    function resolveConfig() {
+        if (pageConfig.languages) {
+            config = Object.assign({ utmCampaign: pageConfig.utmCampaign }, pageConfig.languages[currentLang]);
+            document.documentElement.lang = currentLang;
+        } else {
+            config = pageConfig;
+        }
+    }
+    resolveConfig();
 
     var TRACKED_HOSTS = [
         'dickobraz.cz', 'www.dickobraz.cz',
@@ -89,6 +112,28 @@
         root.appendChild(wrap);
     }
 
+    function renderLangSwitch(root) {
+        if (!pageConfig.languages) return;
+        var wrap = el('div', 'flex gap-2 mt-4 relative');
+        ['en', 'cs'].forEach(function (lang) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.textContent = lang.toUpperCase();
+            var active = lang === currentLang;
+            btn.className = 'px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide transition-colors ' +
+                (active ? 'pink-bg text-white' : 'bg-gray-200 text-gray-500');
+            btn.addEventListener('click', function () {
+                if (currentLang === lang) return;
+                currentLang = lang;
+                try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+                resolveConfig();
+                render();
+            });
+            wrap.appendChild(btn);
+        });
+        root.appendChild(wrap);
+    }
+
     function renderDiscount(root) {
         if (!config.discount) return;
         var box = el(
@@ -139,7 +184,9 @@
 
     function render() {
         var root = document.getElementById('page-content');
+        root.innerHTML = '';
         renderHero(root);
+        renderLangSwitch(root);
         renderDiscount(root);
         renderLinks(root);
         renderFooter(root);

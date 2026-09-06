@@ -89,30 +89,60 @@ window.SITE_CONFIG = {
             }
         },
 
-        // linkx.dickobraz.cz - jen dva odkazy, žádná sleva, žádný rozhovor
+        // linkx.dickobraz.cz - jen dva odkazy, žádná sleva, žádný rozhovor.
+        // Na X chodí i lidi ze zahraničí, proto má tahle stránka navíc
+        // přepínač jazyka (ENG je výchozí, vede na dickobraz.com).
         x: {
             utmCampaign: 'linkx',
-            hero: {
-                image: null,
-                title: 'DickObraz',
-                description: 'Omalovánky pro dospělé, co se nikde neschovávají:'
-            },
-            discount: null,
-            links: [
-                {
-                    id: 'dickobraz',
-                    title: 'DickObraz omalovánky',
-                    url: 'https://www.dickobraz.cz/p/omalovanky-pro-dospele-dickobraz#130',
-                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/6/c/6c4b132468fe78c4b21c948b9430718b-dickobraz2.jpg'
+            defaultLanguage: 'en',
+            languages: {
+                en: {
+                    hero: {
+                        image: null,
+                        title: 'DickObraz',
+                        description: 'Adult coloring books that don’t hide from anyone:'
+                    },
+                    discount: null,
+                    links: [
+                        {
+                            id: 'dickobraz',
+                            title: 'DickObraz coloring book',
+                            url: 'https://www.dickobraz.com/p/dickobraz-the-adult-coloring-book-full-of-dicks',
+                            img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/6/c/6c4b132468fe78c4b21c948b9430718b-dickobraz2.jpg'
+                        },
+                        {
+                            id: 'fillmein',
+                            title: 'FILL ME IN coloring book',
+                            url: 'https://www.dickobraz.com/p/fill-me-in-gay-coloring-book',
+                            img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/a/9/a9c06d6916e4f191c868a289aac780e9-fill-me-in-titulka.jpg'
+                        }
+                    ],
+                    footerLink: null
                 },
-                {
-                    id: 'fillmein',
-                    title: 'FILL ME IN omalovánky',
-                    url: 'https://www.dickobraz.cz/p/fill-me-in-gay-coloring-book',
-                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/a/9/a9c06d6916e4f191c868a289aac780e9-fill-me-in-titulka.jpg'
+                cs: {
+                    hero: {
+                        image: null,
+                        title: 'DickObraz',
+                        description: 'Omalovánky pro dospělé, co se nikde neschovávají:'
+                    },
+                    discount: null,
+                    links: [
+                        {
+                            id: 'dickobraz',
+                            title: 'DickObraz omalovánky',
+                            url: 'https://www.dickobraz.cz/p/omalovanky-pro-dospele-dickobraz#130',
+                            img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/6/c/6c4b132468fe78c4b21c948b9430718b-dickobraz2.jpg'
+                        },
+                        {
+                            id: 'fillmein',
+                            title: 'FILL ME IN omalovánky',
+                            url: 'https://www.dickobraz.cz/p/fill-me-in-gay-coloring-book',
+                            img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/a/9/a9c06d6916e4f191c868a289aac780e9-fill-me-in-titulka.jpg'
+                        }
+                    ],
+                    footerLink: null
                 }
-            ],
-            footerLink: null
+            }
         }
     }
 };
