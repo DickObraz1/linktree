@@ -134,20 +134,27 @@
         root.appendChild(wrap);
     }
 
-    function renderDiscount(root) {
-        if (!config.discount) return;
-        var box = el(
+    function discountBox(discount) {
+        return el(
             'div',
             'discount-bg text-white px-5 py-2.5 rounded-full shadow-md flex items-center justify-center transition-all duration-300 hover:scale-105 select-all cursor-pointer',
-            '<span class="font-semibold text-sm uppercase tracking-wide text-center">🎁 ' + config.discount.label +
-                ': <strong class="text-white font-black text-base ml-1">' + config.discount.code + '</strong></span>'
+            '<span class="font-semibold text-sm uppercase tracking-wide text-center">🎁 ' + discount.label +
+                ': <strong class="text-white font-black text-base ml-1">' + discount.code + '</strong></span>'
         );
-        root.appendChild(box);
+    }
+
+    function renderDiscount(root) {
+        if (!config.discount) return;
+        root.appendChild(discountBox(config.discount));
     }
 
     function renderLinks(root) {
         var list = el('div', 'flex flex-col w-full max-w-md mt-10 space-y-4 relative');
         config.links.forEach(function (link) {
+            if (link.discount) {
+                list.appendChild(discountBox(link.discount));
+            }
+
             var a = document.createElement('a');
             a.href = link.noUtm ? link.url : withUtm(link.url, link.id);
             a.target = '_blank';

@@ -80,6 +80,16 @@ window.SITE_CONFIG = {
                     title: 'KARTY BEZ CENZURY',
                     url: 'https://www.dickobraz.cz/p/karty-proti-lidskosti',
                     img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/8/a/8a6068bd9ddd13956110e6649ea8c518-karty-bez-cenzury-3000.png'
+                },
+                {
+                    id: 'symprove',
+                    title: 'SYMPROVE probiotika',
+                    url: 'https://www.symprove.cz/',
+                    img: 'https://www.symprove.cz/cdn/shop/files/OG_CZ.png?v=1728301956',
+                    discount: {
+                        code: 'TOMAS15',
+                        label: 'Sleva 15%'
+                    }
                 }
             ],
             footerLink: {
