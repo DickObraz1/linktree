@@ -84,14 +84,20 @@ projektu (kroky 5–7 níže).
    přesný název projektu zkontroluj nahoře v dashboardu, protože pokud ti
    Cloudflare při zakládání nabídl jiný název, bude se lišit). Hodnota je
    pro všechny tři domény stejná.
-7. **Teprve teď** jdi ke svému DNS poskytovateli (tam, kde spravuješ
-   `dickobraz.cz`) a přidej tři CNAME záznamy:
-   - **Typ:** CNAME, **Host:** `links`, **Cíl:** hodnota z kroku 6
-   - **Typ:** CNAME, **Host:** `tomas`, **Cíl:** hodnota z kroku 6
-   - **Typ:** CNAME, **Host:** `linkx`, **Cíl:** hodnota z kroku 6
-   - Proxy/Cloudflare ikonka: pokud ti ji nabídne, klidně zapni (oranžový
-     mráček) – jen pokud je tvoje doména nad Cloudflare DNS. Pokud DNS
-     spravuje jiná firma, prostě ulož běžné CNAME záznamy.
+7. **Teprve teď** jdi do administrace **Wedosu** (tam máš `dickobraz.cz`
+   zaregistrovanou a tam se spravuje i DNS – nameservery zůstávají u
+   Wedosu, nikam se nestěhují) a přidej tři CNAME záznamy. Ve
+   WedosGlobalPanelu: **Domény** → klikni na `dickobraz.cz` → **DNS
+   záznamy** (případně "Editace DNS") → **Přidat záznam**, třikrát:
+   - **Typ:** CNAME, **Název/Host:** `links`, **Hodnota/Cíl:** hodnota z kroku 6
+   - **Typ:** CNAME, **Název/Host:** `tomas`, **Hodnota/Cíl:** hodnota z kroku 6
+   - **Typ:** CNAME, **Název/Host:** `linkx`, **Hodnota/Cíl:** hodnota z kroku 6
+   - TTL nech na výchozí hodnotě. Pokud tě Wedos nutí zadat cíl jako
+     plně kvalifikovanou doménu (FQDN) s tečkou na konci
+     (`linktree.pages.dev.`), přidej tu tečku – jinak ji tam nedávej.
+   - Žádnou "Cloudflare proxy" (oranžový mráček) tu nehledej – ta se
+     objevuje jen když DNS zónu spravuje přímo Cloudflare, což tady
+     není tenhle případ. Obyčejný CNAME záznam stačí.
 8. Počkej pár minut na propagaci. Cloudflare Pages ti u každé custom domain
    ukáže zelený stav, jakmile je vše v pořádku.
 
