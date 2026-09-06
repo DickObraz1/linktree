@@ -42,8 +42,8 @@ skriptům od kořene webu (`/assets/...`), což na současné adrese
 `dickobraz1.github.io/linktree/` (podsložka) nefunguje – proto je zatím
 v samostatné branchi **`cloudflare-migration`**, ne v `main`, aby se
 nerozbila stránka, která teď běží naživo na GitHub Pages. Cloudflare Pages
-níže napojíš rovnou na tuhle branch, takže `main` zůstane netknutá, dokud
-sama nerozhodneš, že GitHub Pages vypínáš (krok 9).
+je napojený rovnou na tuhle branch, takže `main` zůstane netknutá, dokud
+sama nerozhodneš, že GitHub Pages vypínáš (poslední krok níže).
 
 ### Jak funguje rozdělení na tři domény
 
@@ -52,62 +52,52 @@ ale servírují stejný nasazený obsah. Aby `links.dickobraz.cz` ukázal
 `index.html`, `tomas.dickobraz.cz` zase `tomas.html` a `linkx.dickobraz.cz`
 `x.html`, se o to stará soubor `functions/_middleware.js`: podívá se, na
 jakou doménu požadavek přišel (`Host` hlavička), a podle toho pošle
-odpovídající soubor na `/`. Tohle je součástí kódu, nemusíš nic dalšího
-nastavovat – jen musíš v Cloudflare přidat všechny tři domény ke stejnému
-projektu (kroky 5–7 níže).
+odpovídající soubor na `/`. Tohle je součástí kódu a všechny tři domény už
+jsou v Cloudflare u projektu přidané (viz níže) – zbývá jen doladit DNS.
 
 ### Postup krok za krokem
 
-1. Jdi na [dash.cloudflare.com](https://dash.cloudflare.com) → v levém menu
-   **Workers & Pages** → **Create** → záložka **Pages** → **Connect to Git**.
-2. Vyber repo **linktree** (musíš mít Cloudflare propojený se svým GitHub
-   účtem, pokud ještě nemáš, dashboard tě tím provede). V kroku výběru
-   branche zvol **`cloudflare-migration`** jako Production branch (viz
-   poznámka výše) – nebo, pokud chceš, si branch v GitHubu předtím sama
-   sloučíš do `main` a necháš tam výchozí `main`.
-3. V nastavení buildu nech:
-   - **Framework preset:** `None`
-   - **Build command:** necháš prázdné
-   - **Build output directory:** `/` (kořen repa)
-4. Klikni **Save and Deploy**. Za chvíli dostaneš dočasnou adresu typu
-   `linktree-xxx.pages.dev` – tam se dá zkontrolovat, že projekt jede,
-   ještě než napojíš vlastní domény (na `.pages.dev` adrese uvidíš vždy
+1. ✅ **Hotovo.** Projekt **linktree** je vytvořený v Cloudflare Pages
+   (Workers & Pages → linktree), napojený na GitHub repo
+   `DickObraz1/linktree`, **Production branch: `cloudflare-migration`**,
+   Framework preset `None`, build command prázdný, build output directory
+   kořen (`/`).
+2. ✅ **Hotovo.** Projekt je nasazený, dočasná adresa je
+   **`linktree-9hv.pages.dev`** (Cloudflare k názvu `linktree` přidal
+   náhodný přívlastek `-9hv`, protože takhle to teď dělá vždycky - to je
+   v pořádku, nic to neovlivňuje). Na téhle `.pages.dev` adrese uvidíš vždy
    `index.html`, protože middleware rozlišuje jen tři konkrétní domény
-   výše – to je v pořádku).
-5. V projektu jdi do **Custom domains** → **Set up a custom domain** a
-   po jedné přidej všechny tři:
-   - `links.dickobraz.cz`
-   - `tomas.dickobraz.cz`
-   - `linkx.dickobraz.cz`
-6. U každé domény ti Cloudflare ukáže hodnotu pro CNAME (obvykle
-   `<název-projektu>.pages.dev`, tedy nejspíš **`linktree.pages.dev`** –
-   přesný název projektu zkontroluj nahoře v dashboardu, protože pokud ti
-   Cloudflare při zakládání nabídl jiný název, bude se lišit). Hodnota je
-   pro všechny tři domény stejná.
-7. **Teprve teď** jdi do administrace **Wedosu** (tam máš `dickobraz.cz`
+   níže.
+3. ✅ **Hotovo.** V projektu, v **Custom domains**, jsou přidané všechny tři:
+   `links.dickobraz.cz`, `tomas.dickobraz.cz`, `linkx.dickobraz.cz`. Zatím
+   ukazují stav "Inactive (Requires DNS setup)" - to se změní, až přidáš
+   CNAME záznamy v kroku 7.
+4. Hodnota pro CNAME cíl je pro všechny tři domény stejná:
+   **`linktree-9hv.pages.dev`**.
+5. **Tohle zbývá udělat:** jdi do administrace **Wedosu** (tam máš `dickobraz.cz`
    zaregistrovanou a tam se spravuje i DNS – nameservery zůstávají u
    Wedosu, nikam se nestěhují) a přidej tři CNAME záznamy. Ve
    WedosGlobalPanelu: **Domény** → klikni na `dickobraz.cz` → **DNS
    záznamy** (případně "Editace DNS") → **Přidat záznam**, třikrát:
-   - **Typ:** CNAME, **Název/Host:** `links`, **Hodnota/Cíl:** hodnota z kroku 6
-   - **Typ:** CNAME, **Název/Host:** `tomas`, **Hodnota/Cíl:** hodnota z kroku 6
-   - **Typ:** CNAME, **Název/Host:** `linkx`, **Hodnota/Cíl:** hodnota z kroku 6
+   - **Typ:** CNAME, **Název/Host:** `links`, **Hodnota/Cíl:** `linktree-9hv.pages.dev`
+   - **Typ:** CNAME, **Název/Host:** `tomas`, **Hodnota/Cíl:** `linktree-9hv.pages.dev`
+   - **Typ:** CNAME, **Název/Host:** `linkx`, **Hodnota/Cíl:** `linktree-9hv.pages.dev`
    - TTL nech na výchozí hodnotě. Pokud tě Wedos nutí zadat cíl jako
      plně kvalifikovanou doménu (FQDN) s tečkou na konci
-     (`linktree.pages.dev.`), přidej tu tečku – jinak ji tam nedávej.
+     (`linktree-9hv.pages.dev.`), přidej tu tečku – jinak ji tam nedávej.
    - Žádnou "Cloudflare proxy" (oranžový mráček) tu nehledej – ta se
      objevuje jen když DNS zónu spravuje přímo Cloudflare, což tady
      není tenhle případ. Obyčejný CNAME záznam stačí.
-8. Počkej pár minut na propagaci. Cloudflare Pages ti u každé custom domain
-   ukáže zelený stav, jakmile je vše v pořádku.
+6. Počkej pár minut až hodin na propagaci (Wedos i Cloudflare píšou až 24–48
+   hodin, obvykle to bývá rychlejší). Cloudflare Pages ti u každé custom
+   domain přepne stav z "Inactive" na zelený "Active", jakmile je vše
+   v pořádku.
 
 **Důležité:** Nameservery domény `dickobraz.cz` se nikam nestěhují a nic se
 nemění pro eshop ani e-maily – přidáváš jen tři nové CNAME záznamy pro
-subdomény `links`, `tomas` a `linkx`. Pořadí ale dodrž přesně: nejdřív
-domény v Cloudflare Pages (krok 5), pak teprve CNAME u DNS poskytovatele
-(krok 7) – jinak se subdomény neaktivují.
+subdomény `links`, `tomas` a `linkx`.
 
-9. Až všechny tři domény fungují a všechno sedí (viz checklist níže), jdi
+7. Až všechny tři domény fungují a všechno sedí (viz checklist níže), jdi
    do starého nastavení GitHub Pages (repo → Settings → Pages) a vypni ho,
    ať neběží dvě verze webu vedle sebe.
 
