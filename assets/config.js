@@ -85,7 +85,8 @@ window.SITE_CONFIG = {
                     id: 'symprove',
                     title: 'SYMPROVE probiotika',
                     url: 'https://www.symprove.cz/',
-                    img: 'https://www.symprove.cz/cdn/shop/files/OG_CZ.png?v=1728301956',
+                    img: 'https://www.symprove.cz/cdn/shop/files/file_transparent_final_256x256.png?v=1732180765',
+                    color: '#00CFB4',
                     discount: {
                         code: 'TOMAS15',
                         label: 'Sleva 15%'

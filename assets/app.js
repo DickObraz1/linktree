@@ -134,13 +134,16 @@
         root.appendChild(wrap);
     }
 
-    function discountBox(discount) {
-        return el(
+    function discountBox(discount, color) {
+        var box = el(
             'div',
-            'discount-bg text-white px-5 py-2.5 rounded-full shadow-md flex items-center justify-center transition-all duration-300 hover:scale-105 select-all cursor-pointer',
+            'text-white px-5 py-2.5 rounded-full shadow-md flex items-center justify-center transition-all duration-300 hover:scale-105 select-all cursor-pointer' +
+                (color ? '' : ' discount-bg'),
             '<span class="font-semibold text-sm uppercase tracking-wide text-center">🎁 ' + discount.label +
                 ': <strong class="text-white font-black text-base ml-1">' + discount.code + '</strong></span>'
         );
+        if (color) box.style.backgroundColor = color;
+        return box;
     }
 
     function renderDiscount(root) {
@@ -151,15 +154,13 @@
     function renderLinks(root) {
         var list = el('div', 'flex flex-col w-full max-w-md mt-10 space-y-4 relative');
         config.links.forEach(function (link) {
-            if (link.discount) {
-                list.appendChild(discountBox(link.discount));
-            }
-
             var a = document.createElement('a');
             a.href = link.noUtm ? link.url : withUtm(link.url, link.id);
             a.target = '_blank';
             a.rel = 'noopener';
-            a.className = 'group pink-bg text-white p-2 rounded-full shadow-lg flex items-center transition-all duration-300 hover:scale-105 active:scale-95';
+            a.className = 'group text-white p-2 rounded-full shadow-lg flex items-center transition-all duration-300 hover:scale-105 active:scale-95' +
+                (link.color ? '' : ' pink-bg');
+            if (link.color) a.style.backgroundColor = link.color;
 
             if (link.img) {
                 var img = el('img', 'w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm group-hover:rotate-6 transition-transform');
@@ -170,6 +171,10 @@
 
             a.addEventListener('click', function () { trackClick(link.id); });
             list.appendChild(a);
+
+            if (link.discount) {
+                list.appendChild(discountBox(link.discount, link.color));
+            }
         });
         root.appendChild(list);
     }
