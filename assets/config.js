@@ -21,19 +21,19 @@ window.SITE_CONFIG = {
                     id: 'dickobraz',
                     title: 'Pinďouří omalovánky',
                     url: 'https://www.dickobraz.cz/p/omalovanky-pro-dospele-dickobraz#130',
-                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/8/6/8665de3e9fe4ed1c2b39cffe27fd1dc8-dickobraz2.jpg'
+                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/6/c/6c4b132468fe78c4b21c948b9430718b-dickobraz2.jpg'
                 },
                 {
                     id: 'odnasravaci',
                     title: 'Odnasrávací omalovánky',
                     url: 'https://www.dickobraz.cz/p/fuck-me-neser-odnasravaci-omalovanky',
-                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/6/4/642844d74a4e70820355eb5558947663-obalka-fuck-me-neser.jpeg'
+                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/e/9/e978fdf84f6dcbebc5dea5b8114e1db0-obalka-fuck-me-neser.jpeg'
                 },
                 {
                     id: 'karty',
                     title: 'KARTY BEZ CENZURY',
                     url: 'https://www.dickobraz.cz/p/karty-proti-lidskosti',
-                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/b/2/b29b894aebd730fc467116bbc3cb7321-sleva-100kc.png'
+                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/8/a/8a6068bd9ddd13956110e6649ea8c518-karty-bez-cenzury-3000.png'
                 }
             ],
             footerLink: {
@@ -67,19 +67,19 @@ window.SITE_CONFIG = {
                     id: 'dickobraz',
                     title: 'Pinďouří omalovánky',
                     url: 'https://www.dickobraz.cz/p/omalovanky-pro-dospele-dickobraz#130',
-                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/8/6/8665de3e9fe4ed1c2b39cffe27fd1dc8-dickobraz2.jpg'
+                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/6/c/6c4b132468fe78c4b21c948b9430718b-dickobraz2.jpg'
                 },
                 {
                     id: 'odnasravaci',
                     title: 'Odnasrávací omalovánky',
                     url: 'https://www.dickobraz.cz/p/fuck-me-neser-odnasravaci-omalovanky',
-                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/6/4/642844d74a4e70820355eb5558947663-obalka-fuck-me-neser.jpeg'
+                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/e/9/e978fdf84f6dcbebc5dea5b8114e1db0-obalka-fuck-me-neser.jpeg'
                 },
                 {
                     id: 'karty',
                     title: 'KARTY BEZ CENZURY',
                     url: 'https://www.dickobraz.cz/p/karty-proti-lidskosti',
-                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/b/2/b29b894aebd730fc467116bbc3cb7321-sleva-100kc.png'
+                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/8/a/8a6068bd9ddd13956110e6649ea8c518-karty-bez-cenzury-3000.png'
                 }
             ],
             footerLink: {
@@ -103,7 +103,7 @@ window.SITE_CONFIG = {
                     id: 'dickobraz',
                     title: 'DickObraz omalovánky',
                     url: 'https://www.dickobraz.cz/p/omalovanky-pro-dospele-dickobraz#130',
-                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/8/6/8665de3e9fe4ed1c2b39cffe27fd1dc8-dickobraz2.jpg'
+                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/6/c/6c4b132468fe78c4b21c948b9430718b-dickobraz2.jpg'
                 },
                 {
                     id: 'fillmein',
