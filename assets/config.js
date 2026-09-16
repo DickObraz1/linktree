@@ -68,6 +68,7 @@ window.SITE_CONFIG = {
                     title: 'Vydal jsem dětskou knížku',
                     url: 'https://www.kosmas.cz/knihy/552028/laska-na-vsech-tlapkach/',
                     img: 'https://obalky.kosmas.cz/ArticleCovers/552/028_bg.jpg',
+                    color: '#E2917E',
                     noUtm: true
                 },
                 {
