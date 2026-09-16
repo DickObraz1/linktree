@@ -28,9 +28,10 @@ export async function onRequestPost(context) {
 
     const perLinkMap = {};
     const perPageMap = {};
+    const perPageLinkMap = {};
 
     for (const row of results) {
-        // rozpad podle odkazu (bez pageview záznamů)
+        // rozpad podle odkazu (bez pageview záznamů, sečteno přes všechny stránky)
         if (row.link_id !== 'pageview') {
             perLinkMap[row.link_id] = (perLinkMap[row.link_id] || 0) + row.pocet;
         }
@@ -43,6 +44,10 @@ export async function onRequestPost(context) {
             perPageMap[row.bio_page].navstevy += row.pocet;
         } else {
             perPageMap[row.bio_page].kliky += row.pocet;
+
+            // rozpad podle odkazu ZVLÁŠŤ pro každou stránku
+            if (!perPageLinkMap[row.bio_page]) perPageLinkMap[row.bio_page] = {};
+            perPageLinkMap[row.bio_page][row.link_id] = (perPageLinkMap[row.bio_page][row.link_id] || 0) + row.pocet;
         }
     }
 
@@ -58,13 +63,22 @@ export async function onRequestPost(context) {
         })
         .sort((a, b) => b.kliky - a.kliky);
 
+    const perPageLink = Object.keys(perPageLinkMap)
+        .map((bioPage) => ({
+            bio_page: bioPage,
+            links: Object.keys(perPageLinkMap[bioPage])
+                .map((linkId) => ({ link_id: linkId, pocet: perPageLinkMap[bioPage][linkId] }))
+                .sort((a, b) => b.pocet - a.pocet)
+        }))
+        .sort((a, b) => (perPageMap[b.bio_page].kliky) - (perPageMap[a.bio_page].kliky));
+
     const totals = perPage.reduce(
         (acc, p) => ({ navstevy: acc.navstevy + p.navstevy, kliky: acc.kliky + p.kliky }),
         { navstevy: 0, kliky: 0 }
     );
     totals.ctr = totals.navstevy > 0 ? Math.round((totals.kliky / totals.navstevy) * 1000) / 10 : 0;
 
-    return new Response(JSON.stringify({ days, perLink, perPage, totals }), {
+    return new Response(JSON.stringify({ days, perLink, perPage, perPageLink, totals }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
     });

@@ -45,12 +45,17 @@
             </table>
         </div>
 
-        <div class="bg-white rounded-lg shadow-sm p-4 mb-10">
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
             <h2 class="font-semibold mb-3">Rozpad podle stránky</h2>
             <table>
                 <thead><tr><th>Stránka</th><th>Návštěvy</th><th>Kliky</th><th>Míra prokliku</th></tr></thead>
                 <tbody id="page-table-body"></tbody>
             </table>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-10">
+            <h2 class="font-semibold mb-3">Kliky podle odkazu a stránky</h2>
+            <div id="page-link-tables" class="space-y-4"></div>
         </div>
     </div>
 
@@ -101,6 +106,15 @@
             pageBody.innerHTML = data.perPage.map(function (row) {
                 return '<tr><td>' + esc(row.bio_page) + '</td><td>' + row.navstevy + '</td><td>' + row.kliky + '</td><td>' + row.ctr + ' %</td></tr>';
             }).join('') || '<tr><td colspan="4" class="text-gray-400">Zatím žádná data</td></tr>';
+
+            var pageLinkTables = document.getElementById('page-link-tables');
+            pageLinkTables.innerHTML = (data.perPageLink || []).map(function (page) {
+                var rows = page.links.map(function (row) {
+                    return '<tr><td>' + esc(row.link_id) + '</td><td>' + row.pocet + '</td></tr>';
+                }).join('');
+                return '<div><h3 class="text-sm font-semibold text-gray-500 uppercase mb-1">' + esc(page.bio_page) + '</h3>' +
+                    '<table><thead><tr><th>Odkaz</th><th>Počet kliků</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+            }).join('') || '<p class="text-gray-400 text-sm">Zatím žádná data</p>';
 
             document.querySelectorAll('.period-btn').forEach(function (btn) {
                 var active = Number(btn.getAttribute('data-days')) === currentDays;
