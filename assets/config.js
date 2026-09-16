@@ -64,6 +64,13 @@ window.SITE_CONFIG = {
                     noUtm: true
                 },
                 {
+                    id: 'detska-kniha',
+                    title: 'Vydal jsem dětskou knížku',
+                    url: 'https://www.kosmas.cz/knihy/552028/laska-na-vsech-tlapkach/',
+                    img: 'https://obalky.kosmas.cz/ArticleCovers/552/028_bg.jpg',
+                    noUtm: true
+                },
+                {
                     id: 'dickobraz',
                     title: 'Pinďouří omalovánky',
                     url: 'https://www.dickobraz.cz/p/omalovanky-pro-dospele-dickobraz#130',
