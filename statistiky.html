@@ -26,9 +26,10 @@
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-xl font-bold">Statistiky DickObraz rozcestníky</h1>
             <div class="space-x-1">
-                <button data-days="7" class="period-btn px-3 py-1 rounded bg-gray-200 text-sm">7 dní</button>
-                <button data-days="30" class="period-btn px-3 py-1 rounded bg-gray-200 text-sm">30 dní</button>
-                <button data-days="90" class="period-btn px-3 py-1 rounded bg-gray-200 text-sm">90 dní</button>
+                <button data-period="today" class="period-btn px-3 py-1 rounded bg-gray-200 text-sm">Dnes</button>
+                <button data-period="7" class="period-btn px-3 py-1 rounded bg-gray-200 text-sm">7 dní</button>
+                <button data-period="30" class="period-btn px-3 py-1 rounded bg-gray-200 text-sm">30 dní</button>
+                <button data-period="90" class="period-btn px-3 py-1 rounded bg-gray-200 text-sm">90 dní</button>
             </div>
         </div>
 
@@ -61,7 +62,7 @@
 
     <script>
         var password = '';
-        var currentDays = 7;
+        var currentPeriod = 7;
 
         function esc(s) {
             var d = document.createElement('div');
@@ -69,12 +70,13 @@
             return d.innerHTML;
         }
 
-        function loadStats(days) {
-            currentDays = days;
+        function loadStats(period) {
+            currentPeriod = period;
+            var body = period === 'today' ? { password: password, period: 'today' } : { password: password, days: period };
             fetch('/api/statistiky', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password: password, days: days })
+                body: JSON.stringify(body)
             })
                 .then(function (r) {
                     if (r.status === 401) throw new Error('auth');
@@ -117,7 +119,8 @@
             }).join('') || '<p class="text-gray-400 text-sm">Zatím žádná data</p>';
 
             document.querySelectorAll('.period-btn').forEach(function (btn) {
-                var active = Number(btn.getAttribute('data-days')) === currentDays;
+                var value = btn.getAttribute('data-period');
+                var active = (value === 'today' ? 'today' : Number(value)) === currentPeriod;
                 btn.className = 'period-btn px-3 py-1 rounded text-sm ' + (active ? 'bg-pink-500 text-white' : 'bg-gray-200');
             });
         }
@@ -125,7 +128,7 @@
         document.getElementById('login-btn').addEventListener('click', function () {
             password = document.getElementById('password-input').value;
             document.getElementById('login-error').classList.add('hidden');
-            loadStats(currentDays);
+            loadStats(currentPeriod);
         });
 
         document.getElementById('password-input').addEventListener('keydown', function (e) {
@@ -134,7 +137,8 @@
 
         document.querySelectorAll('.period-btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
-                loadStats(Number(btn.getAttribute('data-days')));
+                var value = btn.getAttribute('data-period');
+                loadStats(value === 'today' ? 'today' : Number(value));
             });
         });
     </script>

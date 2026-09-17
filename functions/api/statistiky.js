@@ -1,6 +1,17 @@
 // POST /api/statistiky  ->  vrátí souhrn kliků za zvolené období.
 // Chráněno heslem uloženým v proměnné prostředí STATS_PASSWORD.
 
+// Půlnoc "dnes" v Evropě/Praze, převedená na UTC (kvůli letnímu/zimnímu času
+// se posun mění, proto se nepočítá pevným offsetem, ale přes Intl).
+function pragueMidnightUTC(now) {
+    const ymd = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Prague' }).format(now);
+    const naiveMidnightUTC = new Date(ymd + 'T00:00:00Z');
+    const asUTC = new Date(naiveMidnightUTC.toLocaleString('en-US', { timeZone: 'UTC' }));
+    const asPrague = new Date(naiveMidnightUTC.toLocaleString('en-US', { timeZone: 'Europe/Prague' }));
+    const offsetMs = asPrague.getTime() - asUTC.getTime();
+    return new Date(naiveMidnightUTC.getTime() - offsetMs);
+}
+
 export async function onRequestPost(context) {
     const { request, env } = context;
 
@@ -18,9 +29,13 @@ export async function onRequestPost(context) {
         });
     }
 
+    const isToday = body.period === 'today';
     const allowedDays = [7, 30, 90];
-    const days = allowedDays.includes(Number(body.days)) ? Number(body.days) : 7;
-    const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+    const days = isToday ? null : (allowedDays.includes(Number(body.days)) ? Number(body.days) : 7);
+    const cutoff = isToday
+        ? pragueMidnightUTC(new Date()).toISOString()
+        : new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+    const period = isToday ? 'today' : days;
 
     const { results } = await env.DB.prepare(
         'SELECT link_id, bio_page, COUNT(*) as pocet FROM kliky WHERE cas >= ? GROUP BY link_id, bio_page'
@@ -78,7 +93,7 @@ export async function onRequestPost(context) {
     );
     totals.ctr = totals.navstevy > 0 ? Math.round((totals.kliky / totals.navstevy) * 1000) / 10 : 0;
 
-    return new Response(JSON.stringify({ days, perLink, perPage, perPageLink, totals }), {
+    return new Response(JSON.stringify({ period, perLink, perPage, perPageLink, totals }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
     });
