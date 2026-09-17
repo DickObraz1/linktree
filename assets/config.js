@@ -34,6 +34,24 @@ window.SITE_CONFIG = {
                     title: 'KARTY BEZ CENZURY',
                     url: 'https://www.dickobraz.cz/p/karty-proti-lidskosti',
                     img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/8/a/8a6068bd9ddd13956110e6649ea8c518-karty-bez-cenzury-3000.png'
+                },
+                {
+                    id: 'penis-puzzle',
+                    title: 'Penis Puzzle',
+                    url: 'https://www.dickobraz.cz/p/penis-puzzle-1000-dilku-pro-dospele',
+                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/7/0/70685f785d18f04b557e0d4676b5179e-penispuzzle-chriss1.jpg'
+                },
+                {
+                    id: 'kamasutra',
+                    title: 'Kama Sutra omilovánky',
+                    url: 'https://www.dickobraz.cz/p/kama-sutra-omilovanky',
+                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/3/0/302dc96352cf9a22a8b8001f83027cca-obalka-cover-nova-kamasutra.jpeg'
+                },
+                {
+                    id: 'bizar',
+                    title: 'Bizarní omalovánky',
+                    url: 'https://www.dickobraz.cz/p/bizar',
+                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/7/a/7a02562f05482caf2e73c6da805483fc-be9bf781-25f4-42df-bf1d-d2bbd573a23b.jpeg'
                 }
             ],
             footerLink: {
