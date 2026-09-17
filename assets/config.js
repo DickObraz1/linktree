@@ -13,8 +13,8 @@ window.SITE_CONFIG = {
                 description: 'Originální omalovánky pro dospělé a karetní hra bez cenzury. Vyber si níže:'
             },
             discount: {
-                code: 'TOMAS10',
-                label: 'Sleva 10%'
+                code: 'TOMAS15',
+                label: 'Sleva 15%'
             },
             links: [
                 {
