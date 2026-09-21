@@ -69,9 +69,10 @@ window.SITE_CONFIG = {
                 title: 'DickObraz',
                 description: 'Tomáš alias <span class="font-bold text-gray-800 italic">DickObraz</span> je tvůrce originálních omalovánek a karetní hry. Vše můžeš získat níže:'
             },
-            discount: {
-                code: 'TOMAS10',
-                label: 'Sleva 10%'
+            emailCapture: {
+                id: 'email-slevy',
+                title: 'Získej slevu 15% na nákup na dickobraz.cz',
+                description: 'Vlož email a slevu ti pošlu na email.'
             },
             links: [
                 {

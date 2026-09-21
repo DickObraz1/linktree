@@ -146,7 +146,81 @@
         return box;
     }
 
+    function emailCaptureBox(capture) {
+        var wrap = document.createElement('form');
+        wrap.noValidate = false;
+        wrap.className = 'w-full max-w-md flex flex-col items-center gap-2 relative bg-white/80 p-4 rounded-3xl backdrop-blur-sm shadow-sm';
+
+        wrap.appendChild(el('p', 'font-bold text-sm text-center px-2 pink-text uppercase tracking-wide', '🎁 ' + capture.title));
+        if (capture.description) {
+            wrap.appendChild(el('p', 'text-xs text-gray-500 text-center px-2 -mt-1', capture.description));
+        }
+
+        var row = el('div', 'flex w-full gap-2 mt-1');
+        var input = document.createElement('input');
+        input.type = 'email';
+        input.required = true;
+        input.autocomplete = 'email';
+        input.placeholder = 'tvuj@email.cz';
+        input.className = 'flex-grow min-w-0 px-4 py-2.5 rounded-full border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300';
+
+        var btn = document.createElement('button');
+        btn.type = 'submit';
+        btn.textContent = 'Odeslat';
+        btn.className = 'discount-bg text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-md hover:scale-105 active:scale-95 transition-transform whitespace-nowrap';
+
+        row.appendChild(input);
+        row.appendChild(btn);
+        wrap.appendChild(row);
+
+        var msg = el('p', 'text-xs text-center min-h-[1em]', '');
+        wrap.appendChild(msg);
+
+        wrap.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var email = input.value.trim();
+            if (!email) return;
+
+            btn.disabled = true;
+            input.disabled = true;
+            btn.textContent = 'Odesílám…';
+            msg.textContent = '';
+
+            fetch('/api/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, bio_page: page })
+            })
+                .then(function (res) {
+                    if (!res.ok) throw new Error('subscribe failed');
+                    return res.json();
+                })
+                .then(function () {
+                    trackClick(capture.id || 'email-capture');
+                    wrap.innerHTML = '';
+                    wrap.appendChild(el(
+                        'p',
+                        'font-bold text-sm text-center px-4 pink-text',
+                        '✅ Hotovo! Slevu ti za chvíli pošleme na email.'
+                    ));
+                })
+                .catch(function () {
+                    btn.disabled = false;
+                    input.disabled = false;
+                    btn.textContent = 'Odeslat';
+                    msg.className = 'text-xs text-center min-h-[1em] text-red-500';
+                    msg.textContent = 'Něco se nepovedlo, zkus to prosím znovu.';
+                });
+        });
+
+        return wrap;
+    }
+
     function renderDiscount(root) {
+        if (config.emailCapture) {
+            root.appendChild(emailCaptureBox(config.emailCapture));
+            return;
+        }
         if (!config.discount) return;
         root.appendChild(discountBox(config.discount));
     }

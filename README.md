@@ -168,6 +168,32 @@ Tímhle je počítadlo funkční: `/api/klik` zapisuje kliky a návštěvy do D1
 `/api/statistiky` je čte a `links.dickobraz.cz/statistiky` je zobrazuje za
 heslem.
 
+### Sběr emailů na tomas.dickobraz.cz do Ecomailu
+
+Na `tomas.dickobraz.cz` je místo slevového kódu formulář „vlož email a
+slevu ti pošlu" (`/api/subscribe`). Email jde přes Ecomail API rovnou do
+seznamu **4** (`dickobraz.ecomailapp.cz/contacts/4`) s tagem
+**`TOMAS_IG`** – mapování stránka → seznam/tag je napevno v
+`functions/api/subscribe.js`, ne v configu (aby si nikdo zvenčí nemohl
+přes formulář vynutit jiný seznam nebo tag).
+
+1. **API klíč:** Ecomail → přihlásit se → **Nastavení** → **Integrace** →
+   zkopírovat API klíč (vidí ho jen uživatel s rolí administrátor).
+2. Cloudflare dashboard → **Workers & Pages** → projekt **linktree** →
+   **Settings** → **Environment variables** → **Add variable** → název
+   `ECOMAIL_API_KEY`, hodnota = zkopírovaný klíč → zaškrtni **Encrypt** →
+   **Save**.
+3. Znovu nasadit (stejně jako u D1 bindingu a `STATS_PASSWORD`).
+
+**Důležité:** tenhle kód jen zapíše kontakt do Ecomailu s tagem
+`TOMAS_IG` (`trigger_autoresponders: true`, `skip_confirmation: true` –
+bez dvojího potvrzení emailu, protože jde o rychlou odměnu za vyplnění).
+Samotné **odeslání emailu se slevovým kódem** musí existovat jako
+automatizace přímo v Ecomailu (Automatizace → nová automatizace →
+spouštěč „Přidání tagu" → `TOMAS_IG`, nebo spouštěč „Přihlášení do
+seznamu" → seznam 4) – bez ní se kontakt jen uloží, ale nikdo mu nic
+nepošle.
+
 ---
 
 ## 3. Měření – co je potřeba zapnout v GA4
