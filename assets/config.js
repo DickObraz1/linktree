@@ -53,6 +53,12 @@ window.SITE_CONFIG = {
                     title: 'Bizarní omalovánky',
                     url: 'https://www.dickobraz.cz/p/bizar',
                     img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/7/a/7a02562f05482caf2e73c6da805483fc-be9bf781-25f4-42df-bf1d-d2bbd573a23b.jpeg'
+                },
+                {
+                    id: 'hrnky',
+                    title: 'HRNKY',
+                    url: 'https://www.dickobraz.cz/search?phrase=hrnek',
+                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/8/1/81ddc3122c49b818c07be793f86cadbe-alpha-male-hrnek.png'
                 }
             ],
             footerLink: {
