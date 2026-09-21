@@ -168,14 +168,21 @@ Tímhle je počítadlo funkční: `/api/klik` zapisuje kliky a návštěvy do D1
 `/api/statistiky` je čte a `links.dickobraz.cz/statistiky` je zobrazuje za
 heslem.
 
-### Sběr emailů na tomas.dickobraz.cz do Ecomailu
+### Sběr emailů do Ecomailu (links.dickobraz.cz i tomas.dickobraz.cz)
 
-Na `tomas.dickobraz.cz` je místo slevového kódu formulář „vlož email a
-slevu ti pošlu" (`/api/subscribe`). Email jde přes Ecomail API rovnou do
-seznamu **4** (`dickobraz.ecomailapp.cz/contacts/4`) s tagem
-**`TOMAS_IG`** – mapování stránka → seznam/tag je napevno v
-`functions/api/subscribe.js`, ne v configu (aby si nikdo zvenčí nemohl
-přes formulář vynutit jiný seznam nebo tag).
+Na obou stránkách je místo slevového kódu formulář „vlož email a slevu
+ti pošlu" (`/api/subscribe`). Email jde přes Ecomail API rovnou do
+seznamu **4** (`dickobraz.ecomailapp.cz/contacts/4`), s tagem podle
+toho, ze které stránky přišel:
+
+| Stránka | Tag |
+|---|---|
+| `links.dickobraz.cz` (`znacka`) | `DICKOBRAZ_IG` |
+| `tomas.dickobraz.cz` (`tomas`) | `TOMAS_IG` |
+
+Mapování stránka → seznam/tag je napevno v `functions/api/subscribe.js`,
+ne v configu (aby si nikdo zvenčí nemohl přes formulář vynutit jiný
+seznam nebo tag).
 
 1. **API klíč:** Ecomail → přihlásit se → **Nastavení** → **Integrace** →
    zkopírovat API klíč (vidí ho jen uživatel s rolí administrátor).
@@ -185,14 +192,13 @@ přes formulář vynutit jiný seznam nebo tag).
    **Save**.
 3. Znovu nasadit (stejně jako u D1 bindingu a `STATS_PASSWORD`).
 
-**Důležité:** tenhle kód jen zapíše kontakt do Ecomailu s tagem
-`TOMAS_IG` (`trigger_autoresponders: true`, `skip_confirmation: true` –
-bez dvojího potvrzení emailu, protože jde o rychlou odměnu za vyplnění).
+**Důležité:** tenhle kód jen zapíše kontakt do Ecomailu s příslušným
+tagem (`trigger_autoresponders: true`, `skip_confirmation: true` – bez
+dvojího potvrzení emailu, protože jde o rychlou odměnu za vyplnění).
 Samotné **odeslání emailu se slevovým kódem** musí existovat jako
-automatizace přímo v Ecomailu (Automatizace → nová automatizace →
-spouštěč „Přidání tagu" → `TOMAS_IG`, nebo spouštěč „Přihlášení do
-seznamu" → seznam 4) – bez ní se kontakt jen uloží, ale nikdo mu nic
-nepošle.
+automatizace přímo v Ecomailu – jedna pro `TOMAS_IG`, druhá pro
+`DICKOBRAZ_IG` (Automatizace → nová automatizace → spouštěč „Přidání
+tagu") – bez ní se kontakt jen uloží, ale nikdo mu nic nepošle.
 
 ---
 

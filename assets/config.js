@@ -12,9 +12,10 @@ window.SITE_CONFIG = {
                 title: 'DickObraz',
                 description: 'Originální omalovánky pro dospělé a karetní hra bez cenzury. Vyber si níže:'
             },
-            discount: {
-                code: 'TOMAS15',
-                label: 'Sleva 15%'
+            emailCapture: {
+                id: 'email-slevy',
+                title: 'Získej slevu 15% na nákup na dickobraz.cz',
+                description: 'Vlož email a slevu ti pošlu na email.'
             },
             links: [
                 {

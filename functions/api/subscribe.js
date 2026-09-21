@@ -7,12 +7,13 @@
 // Nastavení -> Integrace -> API klíč) - nastavuje se stejně jako
 // STATS_PASSWORD, viz README. Nikdy se neposílá na klienta.
 //
-// V samotném Ecomailu ještě potřebuješ mít nastavenou automatizaci, která
-// na přidání tagu TOMAS_IG (nebo na přihlášení do seznamu 4) pošle email
+// V samotném Ecomailu ještě potřebuješ mít nastavenou automatizaci pro
+// každý tag (TOMAS_IG, DICKOBRAZ_IG - viz mapa níže), která pošle email
 // se slevovým kódem - to už tenhle kód nedělá, jen předá kontakt dál.
 
 const PAGE_TO_ECOMAIL = {
-    tomas: { listId: 4, tag: 'TOMAS_IG' }
+    tomas: { listId: 4, tag: 'TOMAS_IG' },
+    znacka: { listId: 4, tag: 'DICKOBRAZ_IG' }
 };
 
 function isValidEmail(email) {
