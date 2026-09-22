@@ -25,6 +25,12 @@ window.SITE_CONFIG = {
                     img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/6/c/6c4b132468fe78c4b21c948b9430718b-dickobraz2.jpg'
                 },
                 {
+                    id: 'clanek-zuzka',
+                    title: 'Článek se sexkoučkou Zuzkou',
+                    url: 'https://www.dickobraz.cz/a/rozhovor-zuzana-kacvinska',
+                    img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/5/f/5ff7cf756b66f117d4519ddb177c97ce-zuzka-kacvinska-sex-coach.jpg'
+                },
+                {
                     id: 'odnasravaci',
                     title: 'Odnasrávací omalovánky',
                     url: 'https://www.dickobraz.cz/p/fuck-me-neser-odnasravaci-omalovanky',
