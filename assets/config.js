@@ -26,7 +26,7 @@ window.SITE_CONFIG = {
                 },
                 {
                     id: 'clanek-kuba',
-                    title: 'Rozhovor s Kubou',
+                    title: 'Rozhovor s Jakem',
                     url: 'https://www.dickobraz.cz/a/rozhovor-kuba-dominant',
                     img: 'https://dickobraz-cz.s51.cdn-upgates.com/_cache/6/5/65e823d3282577bbd52e4e0694119018-kuba-dotekerota-1.jpg'
                 },
