@@ -32,18 +32,22 @@ export async function onRequestPost(context) {
     const isToday = body.period === 'today';
     const allowedDays = [7, 30, 90];
     const days = isToday ? null : (allowedDays.includes(Number(body.days)) ? Number(body.days) : 7);
-    const cutoff = isToday
-        ? pragueMidnightUTC(new Date()).toISOString()
-        : new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+    const cutoffDate = isToday
+        ? pragueMidnightUTC(new Date())
+        : new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    const cutoff = cutoffDate.toISOString();
     const period = isToday ? 'today' : days;
 
+    // "den" je kalendářní den podle SQLite date() - tedy UTC, ne pražský čas.
+    // Pro graf vývoje v čase to stačí (jde o trend, ne o přesné dělení "dneška").
     const { results } = await env.DB.prepare(
-        'SELECT link_id, bio_page, COUNT(*) as pocet FROM kliky WHERE cas >= ? GROUP BY link_id, bio_page'
+        'SELECT date(cas) as den, link_id, bio_page, COUNT(*) as pocet FROM kliky WHERE cas >= ? GROUP BY den, link_id, bio_page'
     ).bind(cutoff).all();
 
     const perLinkMap = {};
     const perPageMap = {};
     const perPageLinkMap = {};
+    const perDayMap = {};
 
     for (const row of results) {
         // rozpad podle odkazu (bez pageview záznamů, sečteno přes všechny stránky)
@@ -55,15 +59,33 @@ export async function onRequestPost(context) {
         if (!perPageMap[row.bio_page]) {
             perPageMap[row.bio_page] = { navstevy: 0, kliky: 0 };
         }
+
+        // rozpad podle dne (součet přes všechny stránky) - pro graf
+        if (!perDayMap[row.den]) perDayMap[row.den] = { navstevy: 0, kliky: 0 };
+
         if (row.link_id === 'pageview') {
             perPageMap[row.bio_page].navstevy += row.pocet;
+            perDayMap[row.den].navstevy += row.pocet;
         } else {
             perPageMap[row.bio_page].kliky += row.pocet;
+            perDayMap[row.den].kliky += row.pocet;
 
             // rozpad podle odkazu ZVLÁŠŤ pro každou stránku
             if (!perPageLinkMap[row.bio_page]) perPageLinkMap[row.bio_page] = {};
             perPageLinkMap[row.bio_page][row.link_id] = (perPageLinkMap[row.bio_page][row.link_id] || 0) + row.pocet;
         }
+    }
+
+    // Vyplnit i dny bez jediného záznamu nulou, ať je v grafu vidět souvislá
+    // řada od začátku vybraného období do dneška, ne jen trsy dat.
+    const perDay = [];
+    const dayCursor = new Date(Date.UTC(cutoffDate.getUTCFullYear(), cutoffDate.getUTCMonth(), cutoffDate.getUTCDate()));
+    const lastDay = new Date(new Date().toISOString().slice(0, 10) + 'T00:00:00Z');
+    while (dayCursor <= lastDay) {
+        const den = dayCursor.toISOString().slice(0, 10);
+        const p = perDayMap[den] || { navstevy: 0, kliky: 0 };
+        perDay.push({ den, navstevy: p.navstevy, kliky: p.kliky });
+        dayCursor.setUTCDate(dayCursor.getUTCDate() + 1);
     }
 
     const perLink = Object.keys(perLinkMap)
@@ -93,7 +115,7 @@ export async function onRequestPost(context) {
     );
     totals.ctr = totals.navstevy > 0 ? Math.round((totals.kliky / totals.navstevy) * 1000) / 10 : 0;
 
-    return new Response(JSON.stringify({ period, perLink, perPage, perPageLink, totals }), {
+    return new Response(JSON.stringify({ period, perLink, perPage, perPageLink, perDay, totals }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
     });

@@ -39,6 +39,11 @@
         </div>
 
         <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <h2 class="font-semibold mb-3">Vývoj v čase</h2>
+            <div id="chart-box"></div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
             <h2 class="font-semibold mb-3">Kliky podle odkazu</h2>
             <table>
                 <thead><tr><th>Odkaz</th><th>Počet kliků</th></tr></thead>
@@ -92,12 +97,63 @@
                 });
         }
 
+        // Jednoduchý čárový graf bez externí knihovny - kreslí se jako inline SVG.
+        function renderChart(perDay) {
+            var box = document.getElementById('chart-box');
+            if (!perDay || !perDay.length) {
+                box.innerHTML = '<p class="text-gray-400 text-sm">Zatím žádná data</p>';
+                return;
+            }
+
+            var w = 600, h = 220, padL = 32, padR = 8, padT = 10, padB = 22;
+            var innerW = w - padL - padR, innerH = h - padT - padB;
+            var n = perDay.length;
+            var maxVal = 1;
+            perDay.forEach(function (d) { maxVal = Math.max(maxVal, d.navstevy, d.kliky); });
+
+            function x(i) { return padL + (n === 1 ? innerW / 2 : (innerW * i) / (n - 1)); }
+            function y(v) { return padT + innerH - (innerH * v) / maxVal; }
+            function pathFor(key) {
+                return perDay.map(function (d, i) {
+                    return (i === 0 ? 'M' : 'L') + x(i).toFixed(1) + ',' + y(d[key]).toFixed(1);
+                }).join(' ');
+            }
+
+            var gridSteps = 4, gridSvg = '';
+            for (var g = 0; g <= gridSteps; g++) {
+                var gv = Math.round((maxVal * g) / gridSteps);
+                var gy = y(gv);
+                gridSvg += '<line x1="' + padL + '" y1="' + gy + '" x2="' + (w - padR) + '" y2="' + gy + '" stroke="#eee" stroke-width="1" />';
+                gridSvg += '<text x="2" y="' + (gy + 3) + '" font-size="9" fill="#aaa">' + gv + '</text>';
+            }
+
+            var labelEvery = Math.max(1, Math.ceil(n / 6));
+            var xLabelsSvg = perDay.map(function (d, i) {
+                if (i % labelEvery !== 0 && i !== n - 1) return '';
+                return '<text x="' + x(i).toFixed(1) + '" y="' + (h - 6) + '" font-size="9" fill="#aaa" text-anchor="middle">' + esc(d.den.slice(5)) + '</text>';
+            }).join('');
+
+            box.innerHTML =
+                '<div class="flex items-center gap-4 text-xs text-gray-500 mb-2">' +
+                    '<span class="flex items-center gap-1"><span class="inline-block w-3 h-0.5 rounded-full" style="background:#9ca3af"></span>Návštěvy</span>' +
+                    '<span class="flex items-center gap-1"><span class="inline-block w-3 h-0.5 rounded-full" style="background:#ff66c4"></span>Kliky</span>' +
+                '</div>' +
+                '<svg viewBox="0 0 ' + w + ' ' + h + '" class="w-full h-56">' +
+                    gridSvg +
+                    '<path d="' + pathFor('navstevy') + '" fill="none" stroke="#9ca3af" stroke-width="2" />' +
+                    '<path d="' + pathFor('kliky') + '" fill="none" stroke="#ff66c4" stroke-width="2" />' +
+                    xLabelsSvg +
+                '</svg>';
+        }
+
         function renderStats(data) {
             document.getElementById('login-box').classList.add('hidden');
             document.getElementById('stats-box').classList.remove('hidden');
 
             document.getElementById('totals-text').textContent =
                 data.totals.navstevy + ' návštěv, ' + data.totals.kliky + ' kliků, míra prokliku ' + data.totals.ctr + ' %';
+
+            renderChart(data.perDay);
 
             var linkBody = document.getElementById('link-table-body');
             linkBody.innerHTML = data.perLink.map(function (row) {
